@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.commands">
+      <category
+            id="it.polimi.modaclouds.space4cloud-bench.commands.category"
+            name="Space4Cloud-Bench">
+      </category>
+      <command
+            categoryId="it.polimi.modaclouds.space4cloud-bench.commands.category"
+            description="Run the Space4Cloud Benchmark"
+            id="it.polimi.modaclouds.space4cloud-bench.commands.sampleCommand"
+            name="Run">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            class="space4cloudbench.handlers.MainHandler"
+            commandId="it.polimi.modaclouds.space4cloud-bench.commands.sampleCommand">
+      </handler>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="toolbar:org.eclipse.ui.main.toolbar?after=additions">
+         <toolbar
+               id="it.polimi.modaclouds.space4cloud-bench.toolbars.sampleToolbar">
+            <command
+                  commandId="it.polimi.modaclouds.space4cloud-bench.commands.sampleCommand"
+                  icon="icons/Bench.png"
+                  id="it.polimi.modaclouds.space4cloud-bench.toolbars.sampleCommand"
+                  label="Run the space4cloud batch"
+                  style="push"
+                  tooltip="Run the SPACE4Cloud Batch tool">
+            </command>
+         </toolbar>
+      </menuContribution>
+   </extension>
+
+
+</plugin>
