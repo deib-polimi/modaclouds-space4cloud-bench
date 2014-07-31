@@ -17,6 +17,8 @@ import java.util.concurrent.ExecutionException;
 import javax.swing.SwingWorker;
 
 import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class S4cJob extends SwingWorker<Void, Void> implements PropertyChangeListener {
 	
@@ -28,6 +30,7 @@ public class S4cJob extends SwingWorker<Void, Void> implements PropertyChangeLis
 	private Space4Cloud s4c;
 	private String name;
 	private int replica;
+	private final Logger logger = LoggerFactory.getLogger(S4cJob.class);
 
 
 	public S4cJob(String configurationFile, String projectName) {
@@ -38,10 +41,12 @@ public class S4cJob extends SwingWorker<Void, Void> implements PropertyChangeLis
 		this.configurationFile= configurationFile;		
 		name=projectName;
 		this.replica = replica;
+		logger.info("Building job, name: "+projectName+" conf: "+configurationFile+" replica: "+replica);
 	}
 	
 	private void updateConfiguration() {
 		Properties projectProperties = new Properties();
+		logger.info("Updating configuration with new seed");
 		try {
 			FileInputStream in = new FileInputStream(configurationFile);
 			projectProperties.load(in);
@@ -58,7 +63,7 @@ public class S4cJob extends SwingWorker<Void, Void> implements PropertyChangeLis
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		if(evt.getSource().equals(s4c) && evt.getPropertyName().equals("optimizationEnded")){
-			System.out.println("Optimization finished");
+			logger.info("Optimization finished");
 			pcs.firePropertyChange("optimizationFinished",false,true);
 		}
 	}
@@ -79,8 +84,10 @@ public class S4cJob extends SwingWorker<Void, Void> implements PropertyChangeLis
 		
 		s4c = new Space4Cloud(configurationFile);
 		s4c.addPropertyChangeListener(this);
+		logger.info("Running Job");
 		s4c.run();
 		s4c.join();
+		logger.info("Job finished, saving results");
 		copyResults();
 		return null;
 	}
@@ -91,11 +98,11 @@ public class S4cJob extends SwingWorker<Void, Void> implements PropertyChangeLis
 		try {
 			get();
 		} catch (InterruptedException e) {
-			e.printStackTrace();			
+			logger.error("interruption error",e);		
 		} catch (ExecutionException e) {
-			e.printStackTrace();
+			logger.error("execution error",e);
 		} catch (CancellationException e){
-			e.printStackTrace();
+			logger.error("cancellation error",e);
 		}
 	}
 	
@@ -104,7 +111,7 @@ public class S4cJob extends SwingWorker<Void, Void> implements PropertyChangeLis
 		try {
 			prop.load(new FileInputStream(configurationFile));
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error("error loadign property ",e);
 		}
 		
 		String baseDir = prop.getProperty("PROJECT_BASE_FOLDER");
@@ -113,19 +120,17 @@ public class S4cJob extends SwingWorker<Void, Void> implements PropertyChangeLis
 		//clean performance results folder
 		try {
 			Space4Cloud.cleanFolders(Paths.get(baseDir,"space4cloud","performance_results"));
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+		} catch (IOException e) {
+			logger.error("error cleaning directory",e);
 		}
 		
 		Path resultPath = Paths.get(baseDir,Integer.toString(replica));
 		try {
 			FileUtils.copyDirectory(basePath.toFile(), resultPath.toFile());
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("error copying directory",e);
 		}
-		System.out.println("Files copied");
+		logger.info("Files copied");
 	}
 
 	public String getName() {

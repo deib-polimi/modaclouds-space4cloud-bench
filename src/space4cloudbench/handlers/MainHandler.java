@@ -18,11 +18,12 @@
  */
 package space4cloudbench.handlers;
 
-import space4cloudbench.main.Space4CloudBench;
-
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.slf4j.Logger;
+
+import space4cloudbench.main.Space4CloudBench;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -32,6 +33,8 @@ import org.eclipse.core.commands.ExecutionException;
  * @see org.eclipse.core.commands.AbstractHandler
  */
 public class MainHandler extends AbstractHandler {
+	
+	private static final Logger logger = org.slf4j.LoggerFactory.getLogger(MainHandler.class);
 	/**
 	 * The constructor.
 	 */
@@ -50,6 +53,7 @@ public class MainHandler extends AbstractHandler {
 	 */
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
+		logger.info("Running space4cloud bench");
 		Space4CloudBench bench = new Space4CloudBench();
 		bench.execute();	
 		return null;

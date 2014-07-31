@@ -7,13 +7,25 @@ Bundle-Activator: space4cloud_bench.Activator
 Bundle-Vendor: deib-polimi
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- it.polimi.modaclouds.space4cloud;bundle-version="1.0.0",
- org.eclipse.core.resources
+ org.eclipse.core.resources,
+ it.polimi.modaclouds.space4cloud
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .,
- miglayout15-swing.jar,
  target/dependency/commons-io-2.4.jar,
  target/dependency/commons-lang-2.6.jar,
  target/dependency/slf4j-api-1.7.7.jar,
- target/dependency/slf4j-log4j12-1.7.7.jar
+ target/dependency/slf4j-log4j12-1.7.7.jar,
+ log/,
+ target/dependency/log4j-1.2.17.jar,
+ target/dependency/miglayout-core-4.2.jar,
+ target/dependency/miglayout-swing-4.2.jar
+Export-Package: space4cloud_bench;
+  uses:="org.osgi.framework,
+   org.eclipse.jface.resource,
+   org.eclipse.ui.plugin,
+   javax.swing",
+ space4cloudbench.actions;uses:="org.eclipse.ui,org.eclipse.jface.action,org.eclipse.jface.viewers",
+ space4cloudbench.gui;uses:="javax.swing",
+ space4cloudbench.handlers;uses:="org.eclipse.core.commands",
+ space4cloudbench.main;uses:="javax.swing"

@@ -100,7 +100,7 @@
 					<target>1.7</target>
 				</configuration>
 			</plugin>
-					</plugins>
+		</plugins>
 		<pluginManagement>
 			<plugins>
 				<plugin>
@@ -128,7 +128,7 @@
 					</configuration>
 				</plugin>
 
-				
+
 				<plugin>
 					<groupId>com.github.github</groupId>
 					<artifactId>site-maven-plugin</artifactId>
@@ -234,7 +234,11 @@
 			<artifactId>slf4j-log4j12</artifactId>
 			<version>1.7.7</version>
 		</dependency>
-
+		<dependency>
+			<groupId>com.miglayout</groupId>
+			<artifactId>miglayout-swing</artifactId>
+			<version>4.2</version>
+		</dependency>
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
