@@ -8,7 +8,7 @@ Bundle-Vendor: deib-polimi
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.core.resources,
- it.polimi.modaclouds.space4cloud
+ it.polimi.modaclouds.space4cloud;bundle-version="1.0.3"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .,

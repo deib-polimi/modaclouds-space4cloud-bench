@@ -21,8 +21,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class S4cJob extends SwingWorker<Void, Void> implements PropertyChangeListener {
-	
-	
+
+
 	private String configurationFile;
 	private boolean configurationChange = false;
 	private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
@@ -36,14 +36,14 @@ public class S4cJob extends SwingWorker<Void, Void> implements PropertyChangeLis
 	public S4cJob(String configurationFile, String projectName) {
 		this(configurationFile, projectName,1);
 	}
-	
+
 	public S4cJob(String configurationFile, String projectName, int replica) {
 		this.configurationFile= configurationFile;		
 		name=projectName;
 		this.replica = replica;
 		logger.info("Building job, name: "+projectName+" conf: "+configurationFile+" replica: "+replica);
 	}
-	
+
 	private void updateConfiguration() {
 		Properties projectProperties = new Properties();
 		logger.info("Updating configuration with new seed");
@@ -71,7 +71,7 @@ public class S4cJob extends SwingWorker<Void, Void> implements PropertyChangeLis
 	public void addPropertyChangeLisener(PropertyChangeListener listener){
 		pcs.addPropertyChangeListener(listener);
 	}
-	
+
 	public void setSeed(int seed) {
 		this.seed = seed;
 		configurationChange = true;
@@ -81,7 +81,7 @@ public class S4cJob extends SwingWorker<Void, Void> implements PropertyChangeLis
 	protected Void doInBackground() throws Exception {
 		if(configurationChange)
 			updateConfiguration();
-		
+
 		s4c = new Space4Cloud(configurationFile);
 		s4c.addPropertyChangeListener(this);
 		logger.info("Running Job");
@@ -91,7 +91,7 @@ public class S4cJob extends SwingWorker<Void, Void> implements PropertyChangeLis
 		copyResults();
 		return null;
 	}
-	
+
 
 	@Override
 	protected void done() {
@@ -105,7 +105,7 @@ public class S4cJob extends SwingWorker<Void, Void> implements PropertyChangeLis
 			logger.error("cancellation error",e);
 		}
 	}
-	
+
 	private void copyResults() {
 		Properties prop = new Properties();
 		try {
@@ -113,17 +113,14 @@ public class S4cJob extends SwingWorker<Void, Void> implements PropertyChangeLis
 		} catch (IOException e) {
 			logger.error("error loadign property ",e);
 		}
-		
+
 		String baseDir = prop.getProperty("PROJECT_BASE_FOLDER");
 		Path basePath = Paths.get(baseDir,"space4cloud");
-		
+
 		//clean performance results folder
-		try {
-			Space4Cloud.cleanFolders(Paths.get(baseDir,"space4cloud","performance_results"));
-		} catch (IOException e) {
-			logger.error("error cleaning directory",e);
-		}
-		
+
+		FileUtils.deleteQuietly(Paths.get(baseDir,"space4cloud","performance_results").toFile());
+
 		Path resultPath = Paths.get(baseDir,Integer.toString(replica));
 		try {
 			FileUtils.copyDirectory(basePath.toFile(), resultPath.toFile());
