@@ -9,7 +9,10 @@ import javax.swing.SwingWorker;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,14 +23,16 @@ public class Space4CloudBench extends SwingWorker<Void , Void>{
 
 
 	private MainWindow window;
-	private final Logger logger = LoggerFactory.getLogger(Space4CloudBench.class); 
+	private static final Logger logger = LoggerFactory.getLogger(Space4CloudBench.class); 
 	protected BlockingQueue<S4cJob> queue = new ArrayBlockingQueue<S4cJob>(100);
+	
+	public static final String FILE_NAME = "batch.prop";
 	
 
 
 	private void runNextJob() {		
 		if(queue.size() == 0){
-			System.out.println("Benchmark finished");
+			logger.info("Benchmark finished");
 			return;
 		}		
 		S4cJob job = queue.poll();
@@ -37,7 +42,7 @@ public class Space4CloudBench extends SwingWorker<Void , Void>{
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
-				e.printStackTrace();
+				logger.error("Error while waiting.", e);
 			}
 		}		
 		window.updateCompletion(job.getName());
@@ -47,15 +52,28 @@ public class Space4CloudBench extends SwingWorker<Void , Void>{
 	}
 	
 
-	
+	private void refreshProject(String projectName) {
+		try {
+			ResourcesPlugin
+			.getWorkspace()
+			.getRoot()
+			.getProject(projectName)
+			.refreshLocal(IResource.DEPTH_INFINITE,
+					new NullProgressMonitor());
+		} catch (CoreException e) {
+			logger.error("Could not refresh the project",e);
+		}
+
+	}
 
 
 	private void buildJobs(){
 		List<String> projects = window.getSelectedProjects();
 		for(String projectName:projects){
-			IFile configurationFile = ResourcesPlugin.getWorkspace().getRoot().getProject(projectName).getFile("batch.prop");
+			refreshProject(projectName);
+			IFile configurationFile = ResourcesPlugin.getWorkspace().getRoot().getProject(projectName).getFile(FILE_NAME);
 			if(configurationFile == null || !configurationFile.exists()){
-				System.out.println("No batch configuration file batch.prop found for ptoject "+projectName+" skipping it");
+				logger.error("No batch configuration file " + FILE_NAME + " found for project "+projectName+" skipping it");
 				continue;
 			}
 
@@ -83,7 +101,7 @@ public class Space4CloudBench extends SwingWorker<Void , Void>{
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
-				e.printStackTrace();
+				logger.error("Error while waiting.", e);
 			}				
 		}
 

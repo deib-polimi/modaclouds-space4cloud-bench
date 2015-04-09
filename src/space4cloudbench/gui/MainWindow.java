@@ -20,7 +20,12 @@ import javax.swing.border.EmptyBorder;
 
 import net.miginfocom.swing.MigLayout;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class MainWindow extends WindowAdapter implements ActionListener {
+	
+	private static final Logger logger = LoggerFactory.getLogger(MainWindow.class);
 
 	
 	private JFrame frame;
@@ -44,7 +49,7 @@ public class MainWindow extends WindowAdapter implements ActionListener {
 					MainWindow window = new MainWindow();
 					window.show();
 				} catch (Exception e) {
-					e.printStackTrace();
+					logger.error("Error while building the window.", e);
 				}
 			}
 		});
