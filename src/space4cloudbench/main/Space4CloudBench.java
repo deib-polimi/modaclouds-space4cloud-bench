@@ -92,10 +92,11 @@ public class Space4CloudBench extends SwingWorker<Void , Void>{
 				continue;
 			}
 
+			int totalAttempts = 0;
 			for (IFile configurationFile : configurationFiles) {
 				int repetitions= window.getRepetitions();
 				for(int attempt = 0; attempt<repetitions;attempt++){
-					S4cJob optimJob = new S4cJob(configurationFile.getLocation().toPortableString(),projectName,attempt);		
+					S4cJob optimJob = new S4cJob(configurationFile.getLocation().toPortableString(),projectName,totalAttempts++);		
 	//				optimJob.addPropertyChangeLisener(this);
 					optimJob.setSeed(attempt+1);
 					queue.add(optimJob);
