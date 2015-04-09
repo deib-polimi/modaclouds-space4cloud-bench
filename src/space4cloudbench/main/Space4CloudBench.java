@@ -1,5 +1,6 @@
 package space4cloudbench.main;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -8,6 +9,7 @@ import java.util.concurrent.ExecutionException;
 import javax.swing.SwingWorker;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -71,18 +73,33 @@ public class Space4CloudBench extends SwingWorker<Void , Void>{
 		List<String> projects = window.getSelectedProjects();
 		for(String projectName:projects){
 			refreshProject(projectName);
-			IFile configurationFile = ResourcesPlugin.getWorkspace().getRoot().getProject(projectName).getFile(FILE_NAME);
-			if(configurationFile == null || !configurationFile.exists()){
+//			IFile configurationFile = ResourcesPlugin.getWorkspace().getRoot().getProject(projectName).getFile(FILE_NAME);
+			
+			IProject projectFolder = ResourcesPlugin.getWorkspace().getRoot().getProject(projectName);
+			List<IFile> configurationFiles = new ArrayList<IFile>();
+			try {
+				IResource files[] = projectFolder.members(IFolder.FILE);
+				for (IResource f : files) {
+					if (f instanceof IFile && f.getName().startsWith(FILE_NAME))
+						configurationFiles.add((IFile)f);
+				}
+			} catch (CoreException e) {
+				logger.error("Error while getting the list of files in the folder.", e);
+			}
+			
+			if(configurationFiles.size() == 0) { //configurationFile == null || !configurationFile.exists()){
 				logger.error("No batch configuration file " + FILE_NAME + " found for project "+projectName+" skipping it");
 				continue;
 			}
 
-			int repetitions= window.getRepetitions();
-			for(int attempt = 0; attempt<repetitions;attempt++){
-				S4cJob optimJob = new S4cJob(configurationFile.getLocation().toPortableString(),projectName,attempt);		
-//				optimJob.addPropertyChangeLisener(this);
-				optimJob.setSeed(attempt+1);
-				queue.add(optimJob);
+			for (IFile configurationFile : configurationFiles) {
+				int repetitions= window.getRepetitions();
+				for(int attempt = 0; attempt<repetitions;attempt++){
+					S4cJob optimJob = new S4cJob(configurationFile.getLocation().toPortableString(),projectName,attempt);		
+	//				optimJob.addPropertyChangeLisener(this);
+					optimJob.setSeed(attempt+1);
+					queue.add(optimJob);
+				}
 			}
 		}
 	}
