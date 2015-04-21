@@ -56,7 +56,7 @@ public class S4cJob extends SwingWorker<Void, Void> implements PropertyChangeLis
 			projectProperties.store(out,"Random Seed Batch Generation");
 			out.close();
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error("Error while updating the configuration file.", e);
 		}
 	}
 

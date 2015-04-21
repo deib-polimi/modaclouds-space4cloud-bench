@@ -8,7 +8,7 @@ Bundle-Vendor: deib-polimi
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.core.resources,
- it.polimi.modaclouds.space4cloud;bundle-version="1.0.3"
+ it.polimi.modaclouds.space4cloud;bundle-version="1.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .,
@@ -16,8 +16,8 @@ Bundle-ClassPath: .,
  target/dependency/commons-lang-2.6.jar,
  target/dependency/slf4j-api-1.7.7.jar,
  target/dependency/slf4j-log4j12-1.7.7.jar,
- log/,
  target/dependency/log4j-1.2.17.jar,
+ log/,
  target/dependency/miglayout-core-4.2.jar,
  target/dependency/miglayout-swing-4.2.jar
 Export-Package: space4cloud_bench;
