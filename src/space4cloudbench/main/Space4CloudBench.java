@@ -31,7 +31,7 @@ public class Space4CloudBench extends SwingWorker<Void, Void> {
 
 	private MainWindow window;
 	private static final Logger logger = LoggerFactory.getLogger(Space4CloudBench.class);
-	protected BlockingQueue<S4cJob> queue = new ArrayBlockingQueue<S4cJob>(100);
+	protected BlockingQueue<S4cJob> queue = new ArrayBlockingQueue<S4cJob>(2000);
 	private BufferedWriter br;
 	public static final String FILE_NAME = "batch.prop";
 	private String timesFile;
